@@ -4,7 +4,7 @@ Each folder covers a specific OOPS concept in ABAP and includes both source code
 
 ---
 
-##  Repo Structure  
+##  Repository Structure  
 
 - **abstract class/**  
   - Programs showing abstract classes and methods  
