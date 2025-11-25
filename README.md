@@ -72,8 +72,10 @@ Both reporting components call the backend class — **no reporting component ex
 lo_obj = zcl_so_factory=>get_instance( ).
 
 "Retrieve Sales Order data
-ls_header = lo_obj->get_date( iv_vbeln = '0000004711' ).
-lt_items  = lo_obj->get_pm( iv_vbeln = '0000004711' ).
+"To fetch order date
+lo_obj->get_date( iv_vbeln = '0000004711' ).
+"To fetch payment mode of order
+lo_obj->get_pm( iv_vbeln = '0000004711' ).
 ```
 
 ---
