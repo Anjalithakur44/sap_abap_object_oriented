@@ -103,3 +103,21 @@ This project demonstrates the application of ABAP OOP to solve a real Sales Orde
 - Reporting versatility using both OOPS ALV and SALV
 
 ---
+
+## Repository Value
+This repository is a single Sales Order Reporting project, not a collection of unrelated exercises.  
+Every project-related folder contributes to the end-to-end working solution aligned with SAP development standards.
+
+---
+
+### Additional Learning Components in Repository
+Apart from the main Sales Order Reporting framework, this repository also contains additional subfolders demonstrating individual ABAP OOP concepts, which were practiced while building the project. These include:
+
+| Folder | Demonstrated Concept |
+|--------|----------------------|
+| `ME_keyword` | Use of `ME` reference inside class methods |
+| `alias` | Method/attribute aliases for improved readability |
+| `types` | Defining local TYPE structures inside classes |
+| `usual class` | Basic class implementation for conceptual clarity |
+
+These folders are not part of the execution flow of the Sales Order Reporting framework, but they reflect hands-on learning of ABAP OOP concepts during the development process.
