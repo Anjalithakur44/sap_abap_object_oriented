@@ -1,64 +1,105 @@
-# sap_abap_object_oriented
-This repository contains **Object-Oriented ABAP (OOPS) programs** with screenshots of their output.  
-Each folder covers a specific OOPS concept in ABAP and includes both source code and demonstration.  
+# sap_abap_object_oriented - Sales Order Reporting
+
+## Objective
+To develop a reusable ABAP Object-Oriented backend service for Sales Order reporting that retrieves Sales Order header and item data from SAP standard SD tables (**VBAK / VBAP**) and exposes the data to multiple reporting outputs without repeating SELECT logic.
 
 ---
 
-##  Repository Structure  
+## Business Problem
+Custom SAP reports often duplicate SELECT logic to fetch Sales Order details from VBAK and VBAP.  
+This leads to:
+- Repeated code across programs
+- Inconsistent validation logic
+- Increased maintenance effort
 
-- **abstract class/**  
-  - Programs showing abstract classes and methods  
-  - Usage examples with implementation classes  
-
-- **alias/**  
-  - Demonstrates aliasing in interfaces and classes  
-
-- **event handling/**  
-  - Examples of ABAP event definition and handling  
-
-- **exception class/**  
-  - Custom exception classes and handling in ABAP  
-
-- **interfaces/**  
-  - Programs using interfaces with multiple implementations  
-
-- **ME_keyword/**  
-  - Shows the use of the `ME` keyword inside ABAP classes  
-
-- **oops alv/**  
-  - ALV reports created using **OOPS concepts**  
-
-- **persistence class/**  
-  - Examples of persistence classes for database handling  
-
-- **salv_reports/**  
-  - Programs using **SALV Classes** for modern ALV reporting  
-
-- **singleton_class/**  
-  - Example of Singleton design pattern in ABAP  
-
-- **types/**  
-  - Type definitions and usage within ABAP OOPS  
-
-- **usual class/**  
-  - Regular class implementation with attributes and methods  
+A centralized solution was required to standardize Sales Order retrieval and support multiple reporting formats.
 
 ---
 
-##  Features  
-
-- Covers **major OOPS concepts in ABAP**  
-- Includes **program code + screenshots of output**  
-- Useful as a **practice reference** or **ABAP learning guide**  
+## Solution Summary
+A complete OOP-based Sales Order reporting framework was built with the capability to:
+1. Accept Sales Order number as input
+2. Validate the input and handle missing/invalid data
+3. Retrieve header and item details from **VBAK / VBAP**
+4. Return formatted internal tables to reporting components
+5. Display the result using:
+   - **OOPS ALV (interactive ALV)**
+   - **SALV (standard ALV)**
+6. Optionally update Sales Order enhancement tables (**ZORDH_04 / ZORDIT_04**) through a persistent class
 
 ---
 
-##  Screenshots  
+## Architecture Components
 
-Screenshots are included in each folder to illustrate the program execution and output.  
+### Backend Service (OOP Framework)
+| Component | Responsibility |
+|----------|----------------|
+| Interface | Declares mandatory operations for Sales Order retrieval |
+| Abstract Class | Provides reusable logic and enforces structure |
+| Concrete / Child Class | Performs actual SELECT on VBAK / VBAP |
+| Constructor | Initializes required runtime attributes |
+| Singleton | Ensures a single shared instance of the service |
+| Exception Class | Handles invalid/missing Sales Order input |
+| Event + Handler | Executes error workflow for validation failures |
+| Persistent Class | Demonstrates safe COMMIT / ROLLBACK updates to ZORDH_04 & ZORDIT_04 (**only component that performs write to Database**) |
+
+### Reporting Components
+| Component | SAP Class Used | Output |
+|----------|----------------|--------|
+| OOPS ALV Report | `CL_GUI_ALV_GRID` | Interactive / editable ALV grid |
+| SALV Report | `CL_GUI_SALV_TABLE` | Standard read-only ALV list |
+
+Both reporting components call the backend class — **no reporting component executes its own SELECT statement**.
 
 ---
 
-##  Author  
+## Functional Flow
+**Process Flow**
+| Step | Action |
+|------|--------|
+| 1 | User enters Sales Order number |
+| 2 | Singleton returns OOP service instance |
+| 3 | Framework retrieves data from VBAK / VBAP |
+| 4 | Validation performed |
+| 5 | If valid → ALV / SALV reporting |
+| 6 | If invalid → Event → Handler |
+| 7 | Optional → Persistent Class updates ZORDH_04 / ZORDIT_04 |
 
-Developed as part of hands-on learning in **SAP ABAP Object-Oriented Programming**.  
+---
+
+## Usage Example
+```abap
+lo_obj = zcl_so_factory=>get_instance( ).
+
+"Retrieve Sales Order data
+ls_header = lo_obj->get_date( iv_vbeln = '0000004711' ).
+lt_items  = lo_obj->get_pm( iv_vbeln = '0000004711' ).
+```
+
+---
+
+## SAP Tables Used
+| Purpose                | Tables                                                        |
+| ---------------------- | ------------------------------------------------------------- |
+| Read (Standard SAP SD) | **VBAK — Sales Order Header**<br>**VBAP — Sales Order Items** |
+
+---
+
+## Results and Reporting Output
+The retrieved Sales Order header and item details can be displayed using:
+
+- OOPS ALV grid (interactive)
+- SALV list (read-only)
+
+Because both reports consume the same backend OOP service, the logic is centralized, reusable, and maintenance-friendly.
+
+---
+
+## Outcome
+This project demonstrates the application of ABAP OOP to solve a real Sales Order reporting scenario with:
+- Clean separation between business logic and UI logic
+- No duplicate SELECT statements across reports
+- Consistent validation and error handling
+- Reporting versatility using both OOPS ALV and SALV
+
+---
